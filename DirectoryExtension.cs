@@ -23,7 +23,10 @@ namespace BobManager
         public static IEnumerable<FileSystemInfo> GetItems(this DirectoryInfo dir)
         {
             var items = new List<FileSystemInfo>();
-            items.Add(new DirectoryInfo(".."));
+
+            var parent = Directory.GetParent(dir.FullName);
+            items.Add(parent);
+
             items.AddRange(dir.GetDirectories());
             items.AddRange(dir.GetFiles());
 
