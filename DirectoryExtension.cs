@@ -15,7 +15,13 @@ namespace BobManager
 
             foreach (var directory in dir.GetDirectories())
             {
-                sum += GetSize(directory);
+                try
+                {
+                    sum += GetSize(directory);
+                }
+                catch (Exception)
+                {
+                }
             }
 
             return sum;

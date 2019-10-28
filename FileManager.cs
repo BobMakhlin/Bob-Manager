@@ -14,10 +14,22 @@ namespace BobManager
         public FileManager()
         {
             // Set directory
-            fileTable.Dir = new DirectoryInfo(@"C:\Users\boris\Desktop");
+            fileTable.Dir = new DirectoryInfo(@"C:\");
 
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Clear();
+        }
+        private static string FormatFileSize(long length)
+        {
+            if (length < Math.Pow(2, 10))
+                return $"{length:0.000} b";
+            if (length >= Math.Pow(2, 10) && length < Math.Pow(2, 20))
+                return $"{length / (double)1000:0.000} kb";
+            if (length >= Math.Pow(2, 20) && length < Math.Pow(2, 30))
+                return $"{length / 1e+6:0.000} mb";
+            if (length >= Math.Pow(2, 30) && length < Math.Pow(2, 40))
+                return $"{length / 1e+9:0.000} gb";
+            throw new FormatException("Bad size");
         }
         private void HandleKeyboard()
         {
@@ -75,43 +87,39 @@ namespace BobManager
 
             int start = fileTable.Index / 20 * 20;
 
-            long size;
             for (int i = start; i < (start + 20 > items.Count() ? items.Count() : start + 20); i++)
             {
-                if (items[i] is DirectoryInfo dir)
+                try
                 {
-                    if (i == fileTable.Index)
-                        Console.BackgroundColor = ConsoleColor.DarkRed;
-
-                    try
+                    if (items[i] is DirectoryInfo dir)
                     {
-                        size = dir.GetSize();
+                        if (i == fileTable.Index)
+                            Console.BackgroundColor = ConsoleColor.DarkRed;
+
+                        Console.WriteLine($"| {dir.Name.Shorten(20),-20} | " +
+                            $"{"<DIR>",-16} | " +
+                            $"{dir.CreationTime.ToShortDateString()} | " +
+                            $"{dir.CreationTime.ToShortTimeString(),-5} |");
+
+                        if (i == fileTable.Index)
+                            Console.BackgroundColor = ConsoleColor.DarkBlue;
                     }
-                    catch (Exception)
+                    else if (items[i] is FileInfo file)
                     {
-                        size = 0;
+                        if (i == fileTable.Index)
+                            Console.BackgroundColor = ConsoleColor.DarkRed;
+
+                        Console.WriteLine($"| {file.Name.Shorten(20),-20} | " +
+                            $"{FormatFileSize(file.Length),-16:0.000} | " +
+                            $"{file.CreationTime.ToShortDateString()} | " +
+                            $"{file.CreationTime.ToShortTimeString(),-5} |");
+
+                        if (i == fileTable.Index)
+                            Console.BackgroundColor = ConsoleColor.DarkBlue;
                     }
-
-                    Console.WriteLine($"| {dir.Name.Shorten(20),-20} | " +
-                        $"{size / 1e+6,-16:0.000} | " +
-                        $"{dir.CreationTime.ToShortDateString()} | " +
-                        $"{dir.CreationTime.ToShortTimeString(),-5} |");
-
-                    if (i == fileTable.Index)
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
                 }
-                else if (items[i] is FileInfo file)
+                catch(Exception)
                 {
-                    if (i == fileTable.Index)
-                        Console.BackgroundColor = ConsoleColor.DarkRed;
-
-                    Console.WriteLine($"| {file.Name.Shorten(20),-20} | " +
-                        $"{file.Length / 1e+6,-16:0.000} | " +
-                        $"{file.CreationTime.ToShortDateString()} | " +
-                        $"{file.CreationTime.ToShortTimeString(),-5} |");
-
-                    if (i == fileTable.Index)
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
                 }
             }
         }
