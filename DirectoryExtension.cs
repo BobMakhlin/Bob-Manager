@@ -30,11 +30,50 @@ namespace BobManager
         {
             var items = new List<FileSystemInfo>();
 
-            var parent = Directory.GetParent(dir.FullName);
-            items.Add(parent);
+            try
+            {
+                var parent = Directory.GetParent(dir.FullName);
+                items.Add(parent);
+            }
+            catch (Exception)
+            {
+            }
 
-            items.AddRange(dir.GetDirectories());
-            items.AddRange(dir.GetFiles());
+            try
+            {
+                var dirs = dir.GetDirectories();
+                foreach (var directory in dirs)
+                {
+                    try
+                    {
+                        items.Add(directory);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            try
+            {
+                var files = dir.GetFiles();
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        items.Add(file);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+            catch(Exception)
+            {
+            }
 
             return items;
         }

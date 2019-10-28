@@ -14,7 +14,7 @@ namespace BobManager
         public FileManager()
         {
             // Set directory
-            fileTable.Dir = new DirectoryInfo(@"C:\");
+            fileTable.Dir = new DirectoryInfo(@"C:\Users\boris\Desktop");
 
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Clear();
@@ -86,7 +86,6 @@ namespace BobManager
             var items = fileTable.Dir.GetItems().ToList();
 
             int start = fileTable.Index / 20 * 20;
-
             for (int i = start; i < (start + 20 > items.Count() ? items.Count() : start + 20); i++)
             {
                 try
