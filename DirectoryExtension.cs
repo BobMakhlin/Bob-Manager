@@ -33,7 +33,10 @@ namespace BobManager
             try
             {
                 var parent = Directory.GetParent(dir.FullName);
-                items.Add(parent);
+                if (parent != null)
+                {
+                    items.Add(parent);
+                }
             }
             catch (Exception)
             {
