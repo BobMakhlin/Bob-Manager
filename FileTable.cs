@@ -13,6 +13,30 @@ namespace BobManager
 
         public DirectoryInfo Dir { get; set; }
         public ConsoleColor SelectedItemColor { get; set; } = ConsoleColor.DarkRed;
+        public (int X, int Y) Pos { get; set; }
+
+        private string GetInfo(FileSystemInfo item)
+        {
+            string info = string.Empty;
+
+            if (item is DirectoryInfo dir)
+            {
+                info = $"| {dir.Name.Shorten(20),-20} | " +
+                    $"{"<DIR>",-12} | " +
+                    $"{dir.CreationTime.ToShortDateString()} | " +
+                    $"{dir.CreationTime.ToShortTimeString(),-5} |\n";
+            }
+            else if (item is FileInfo file)
+            {
+                info = $"| {file.Name.Shorten(20),-20} | " +
+                    $"{FormatFileSize(file.Length),-12:0.000} | " +
+                    $"{file.CreationTime.ToShortDateString()} | " +
+                    $"{file.CreationTime.ToShortTimeString(),-5} |\n";
+            }
+
+            return info;
+        }
+
         public int Index
         {
             get => _index;
@@ -36,17 +60,17 @@ namespace BobManager
                 return $"{length / 1e+9:0.000} gb";
             throw new FormatException("Bad size");
         }
-        public void Draw((int X, int Y) pos)
-        {
 
+        public void Draw()
+        {
             string title = $"| {"Name",-20} | {"Size (MB)",-12} | {"Date",-10} | {"Time",-5} |";
 
-            Console.SetCursorPosition(pos.X, pos.Y);
+            Console.SetCursorPosition(Pos.X, Pos.Y);
             Console.Write(title);
 
             string line = new string('-', title.Length);
 
-            Console.SetCursorPosition(pos.X, pos.Y + 1);
+            Console.SetCursorPosition(Pos.X, Pos.Y + 1);
             Console.Write(line);
 
             var items = Dir.GetItems().ToList();
@@ -61,11 +85,8 @@ namespace BobManager
                         if (i == Index)
                             Console.BackgroundColor = SelectedItemColor;
 
-                        Console.SetCursorPosition(pos.X, pos.Y + (i - start + 2));
-                        Console.Write($"| {dir.Name.Shorten(20),-20} | " +
-                            $"{"<DIR>",-12} | " +
-                            $"{dir.CreationTime.ToShortDateString()} | " +
-                            $"{dir.CreationTime.ToShortTimeString(),-5} |");
+                        Console.SetCursorPosition(Pos.X, Pos.Y + (i - start + 2));
+                        Console.WriteLine(GetInfo(dir));
 
                         if (i == Index)
                             Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -75,11 +96,8 @@ namespace BobManager
                         if (i == Index)
                             Console.BackgroundColor = SelectedItemColor;
 
-                        Console.SetCursorPosition(pos.X, pos.Y + (i - start + 2));
-                        Console.Write($"| {file.Name.Shorten(20),-20} | " +
-                            $"{FormatFileSize(file.Length),-12:0.000} | " +
-                            $"{file.CreationTime.ToShortDateString()} | " +
-                            $"{file.CreationTime.ToShortTimeString(),-5} |");
+                        Console.SetCursorPosition(Pos.X, Pos.Y + (i - start + 2));
+                        Console.WriteLine(GetInfo(file));
 
                         if (i == Index)
                             Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -89,6 +107,43 @@ namespace BobManager
                 {
                 }
             }
+        }
+        private void DrawSelectedItem(List<FileSystemInfo> items)
+        {
+            Console.SetCursorPosition(Pos.X, Pos.Y + (Index % 20) + 2);
+            Console.BackgroundColor = SelectedItemColor;
+            Console.WriteLine(GetInfo(items[Index]));
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+        }
+        public void RedrawUp()
+        {
+            int oldY = Console.CursorTop;
+
+            var items = Dir.GetItems().ToList();
+
+            DrawSelectedItem(items);
+
+            if (Index + 1 < items.Count())
+            {
+                Console.SetCursorPosition(Pos.X, Pos.Y + (Index % 20) + 3);
+                Console.WriteLine(GetInfo(items[Index + 1]));
+            }
+
+            Console.SetCursorPosition(0, 23);
+        }
+        public void RedrawDown()
+        {
+            var items = Dir.GetItems().ToList();
+
+            DrawSelectedItem(items);
+
+            if (Index - 1 >= 0)
+            {
+                Console.SetCursorPosition(Pos.X, Pos.Y + (Index % 20) + 1);
+                Console.WriteLine(GetInfo(items[Index - 1]));
+            }
+
+            Console.SetCursorPosition(0, 23);
         }
     }
 }

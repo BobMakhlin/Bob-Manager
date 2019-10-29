@@ -44,31 +44,39 @@ namespace BobManager
                 case ConsoleKey.UpArrow:
                     tables[(int)activeTable].Index--;
 
-                    Console.Clear();
-                    Show();
+                    if ((tables[(int)activeTable].Index + 1) % 20 == 0)
+                    {
+                        Console.Clear();
+                        Show();
+                    }
+                    else
+                    {
+                        tables[(int)activeTable].RedrawUp();
+                    }
                     break;
                 case ConsoleKey.DownArrow:
                     tables[(int)activeTable].Index++;
 
-                    Console.Clear();
-                    Show();
-                    break;
-                case ConsoleKey.LeftArrow:
-                    if(activeTable != ActiveTable.FirstTableActive)
+                    if (tables[(int)activeTable].Index % 20 == 0)
                     {
-                        activeTable = ActiveTable.FirstTableActive;
-
                         Console.Clear();
                         Show();
                     }
+                    else
+                    {
+                        tables[(int)activeTable].RedrawDown();
+                    }
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (activeTable != ActiveTable.FirstTableActive)
+                    {
+                        activeTable = ActiveTable.FirstTableActive;
+                    }
                     break;
                 case ConsoleKey.RightArrow:
-                    if(activeTable != ActiveTable.SecondTableActive)
+                    if (activeTable != ActiveTable.SecondTableActive)
                     {
                         activeTable = ActiveTable.SecondTableActive;
-
-                        Console.Clear();
-                        Show();
                     }
                     break;
                 case ConsoleKey.Enter:
@@ -101,8 +109,10 @@ namespace BobManager
         }
         private void Show()
         {
-            tables[0].Draw((0, 0));
-            tables[1].Draw((61, 0));
+            tables[0].Draw();
+
+            tables[1].Pos = (61, 0);
+            tables[1].Draw();
         }
     }
 }
