@@ -27,8 +27,8 @@ namespace BobManager
         public FileManager()
         {
             // Set directory
-            tables[0].Dir = new DirectoryInfo(@"C:\Users\boris\Desktop");
-            tables[1].Dir = new DirectoryInfo(@"C:\Users\boris\Desktop");
+            tables[0].Dir = new DirectoryInfo(@"C:\");
+            tables[1].Dir = new DirectoryInfo(@"C:\");
             tables[1].SelectedItemColor = ConsoleColor.DarkGreen;
 
             Console.WindowWidth = 125;
@@ -44,7 +44,7 @@ namespace BobManager
                 case ConsoleKey.UpArrow:
                     tables[(int)activeTable].Index--;
 
-                    if ((tables[(int)activeTable].Index + 1) % 20 == 0)
+                    if ((tables[(int)activeTable].Index + 1) % Program.MaxItemsCount == 0)
                     {
                         Console.Clear();
                         Show();
@@ -57,7 +57,7 @@ namespace BobManager
                 case ConsoleKey.DownArrow:
                     tables[(int)activeTable].Index++;
 
-                    if (tables[(int)activeTable].Index % 20 == 0)
+                    if (tables[(int)activeTable].Index % Program.MaxItemsCount == 0)
                     {
                         Console.Clear();
                         Show();
@@ -104,7 +104,13 @@ namespace BobManager
 
             while (true)
             {
-                HandleKeyboard();
+                try
+                {
+                    HandleKeyboard();
+                }
+                catch(Exception)
+                {
+                }
             }
         }
         private void Show()
