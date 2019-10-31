@@ -96,6 +96,13 @@ namespace BobManager
                     Console.Clear();
                     Show();
                     break;
+                case ConsoleKey.Tab:
+                    SwitchDriveWindow driveWindow = new SwitchDriveWindow(tables[(int)activeTable]);
+                    driveWindow.Start();
+
+                    Console.Clear();
+                    Show();
+                    break;
             }
         }
         public void Start()
@@ -108,7 +115,7 @@ namespace BobManager
                 {
                     HandleKeyboard();
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                 }
             }
