@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace BobManager
 {
@@ -60,7 +57,7 @@ namespace BobManager
             Console.SetCursorPosition(pos.X, pos.Y + 1);
             Console.Write(title);
 
-            for (int i = 0; i < _drives.Count(); i++) 
+            for (int i = 0; i < _drives.Count(); i++)
             {
                 Console.SetCursorPosition(pos.X, pos.Y + i + 2);
 

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 
 namespace BobManager
 {
@@ -102,6 +99,23 @@ namespace BobManager
                         FileTable = tables[(int)activeTable]
                     };
                     driveWindow.Start();
+
+                    Console.Clear();
+                    Show();
+                    break;
+                case ConsoleKey.Delete:
+                    tables[(int)activeTable].DeleteSelectedItem();
+
+                    Console.Clear();
+                    Show();
+                    break;
+                case ConsoleKey.F5:
+                    Console.Clear();
+                    Show();
+                    break;
+                case ConsoleKey.F1:
+                    items = tables[(int)activeTable].Dir.GetItems().ToList();
+                    InfoWindow.ShowInfo(items[tables[(int)activeTable].Index]);
 
                     Console.Clear();
                     Show();

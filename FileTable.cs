@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace BobManager
 {
@@ -132,6 +130,13 @@ namespace BobManager
             }
 
             Console.SetCursorPosition(0, Program.MaxItemsCount + 3);
+        }
+
+        // Working with directory.
+        public void DeleteSelectedItem()
+        {
+            var items = Dir.GetItems().ToList();
+            items[Index].Delete();
         }
     }
 }
