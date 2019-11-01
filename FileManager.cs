@@ -31,7 +31,7 @@ namespace BobManager
             tables[1].Dir = new DirectoryInfo(@"C:\");
             tables[1].SelectedItemColor = ConsoleColor.DarkGreen;
 
-            Console.WindowWidth = 125;
+            Console.WindowWidth = 126;
 
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Clear();
@@ -97,7 +97,10 @@ namespace BobManager
                     Show();
                     break;
                 case ConsoleKey.Tab:
-                    SwitchDriveWindow driveWindow = new SwitchDriveWindow(tables[(int)activeTable]);
+                    SwitchDriveWindow driveWindow = new SwitchDriveWindow()
+                    {
+                        FileTable = tables[(int)activeTable]
+                    };
                     driveWindow.Start();
 
                     Console.Clear();
@@ -124,7 +127,7 @@ namespace BobManager
         {
             tables[0].Draw();
 
-            tables[1].Pos = (61, 0);
+            tables[1].Pos = (63, 0);
             tables[1].Draw();
         }
     }

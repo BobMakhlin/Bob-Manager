@@ -21,15 +21,15 @@ namespace BobManager
 
             if (item is DirectoryInfo dir)
             {
-                info = $"| {dir.Name.Shorten(20),-20} | " +
-                    $"{"<DIR>",-12} | " +
+                info = $"| {dir.Name.Shorten(22),-22} | " +
+                    $"<Directory> | " +
                     $"{dir.CreationTime.ToShortDateString()} | " +
                     $"{dir.CreationTime.ToShortTimeString(),-5} |";
             }
             else if (item is FileInfo file)
             {
-                info = $"| {file.Name.Shorten(20),-20} | " +
-                    $"{Helper.FormatSize(file.Length),-12:0.000} | " +
+                info = $"| {file.Name.Shorten(22),-22} | " +
+                    $"{Helper.FormatSize(file.Length),11} | " +
                     $"{file.CreationTime.ToShortDateString()} | " +
                     $"{file.CreationTime.ToShortTimeString(),-5} |";
             }
@@ -51,7 +51,7 @@ namespace BobManager
 
         public void Draw()
         {
-            string title = $"| {"Name",-20} | {"Size (MB)",-12} | {"Date",-10} | {"Time",-5} |";
+            string title = $"| {Helper.CenterText("Name", 22)} | {Helper.CenterText("Size ", 11)} | {Helper.CenterText("Date", 10)} | {"Time",-5} |";
 
             Console.SetCursorPosition(Pos.X, Pos.Y);
             Console.Write(title);

@@ -10,18 +10,9 @@ namespace BobManager
     class SwitchDriveWindow
     {
         int _index = 0;
-        FileTable _fileTable;
         DriveInfo[] _drives = DriveInfo.GetDrives();
 
-        public SwitchDriveWindow(FileTable fileTable)
-        {
-            _fileTable = fileTable;
-            DriveInfo drive = new DriveInfo(Path.GetPathRoot(fileTable.Dir.FullName));
-
-            int index = _drives.ToList().IndexOf(drive);
-            if (index != -1)
-                _index = index;
-        }
+        public FileTable FileTable { get; set; }
         public void Start()
         {
             Draw();
@@ -33,8 +24,8 @@ namespace BobManager
                     case ConsoleKey.Enter:
                         if (Directory.Exists(_drives[_index].Name))
                         {
-                            _fileTable.Dir = new DirectoryInfo(DriveInfo.GetDrives()[_index].Name);
-                            _fileTable.Index = 0;
+                            FileTable.Dir = new DirectoryInfo(DriveInfo.GetDrives()[_index].Name);
+                            FileTable.Index = 0;
                         }
                         return;
                     case ConsoleKey.UpArrow:
