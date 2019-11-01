@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace BobManager
 {
@@ -114,8 +116,6 @@ namespace BobManager
                 Console.SetCursorPosition(Pos.X, Pos.Y + (Index % Program.MaxItemsCount) + 3);
                 Console.Write(GetInfo(items[Index + 1]));
             }
-
-            Console.SetCursorPosition(0, Program.MaxItemsCount + 3);
         }
         public void RedrawDown()
         {
@@ -128,15 +128,29 @@ namespace BobManager
                 Console.SetCursorPosition(Pos.X, Pos.Y + (Index % Program.MaxItemsCount) + 1);
                 Console.Write(GetInfo(items[Index - 1]));
             }
-
-            Console.SetCursorPosition(0, Program.MaxItemsCount + 3);
         }
 
         // Working with directory.
         public void DeleteSelectedItem()
         {
             var items = Dir.GetItems().ToList();
-            items[Index].Delete();
+
+            if(items[Index] is DirectoryInfo dir)
+            {
+                dir.Remove();
+            }
+            else if(items[Index] is FileInfo file)
+            {
+                file.Delete();
+            }
+        }
+        public void CreateDirectory(string name)
+        {
+            Directory.CreateDirectory($"{Dir.FullName}\\{name}");
+        }
+        public void CreateFile(string name)
+        {
+            File.Create($"{Dir.FullName}\\{name}");
         }
     }
 }

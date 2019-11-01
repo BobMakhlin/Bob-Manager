@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace BobManager
 {
@@ -24,6 +26,59 @@ namespace BobManager
 
             return sum;
         }
+        public static void Remove(this DirectoryInfo dir)
+        {
+            foreach (var file in dir.GetFiles())
+            {
+                try
+                {
+                    file.Delete();
+                }
+                catch(Exception)
+                {
+                }
+            }
+            foreach (var directory in dir.GetDirectories())
+            {
+                try
+                {
+                    Remove(directory);
+                    directory.Delete();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            dir.Delete();
+        }
+        public static void CopyTo(this DirectoryInfo dir, string path)
+        {
+            Directory.CreateDirectory(path);
+
+            foreach (var file in dir.GetFiles())
+            {
+                try
+                {
+                    file.CopyTo($"{path}\\{file.Name}");
+                }
+                catch (Exception)
+                {
+                }         
+            }
+
+            foreach (var directory in dir.GetDirectories())
+            {
+                try
+                {
+                    CopyTo(directory, $"{path}\\{directory.Name}");
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
         public static IEnumerable<FileSystemInfo> GetItems(this DirectoryInfo dir)
         {
             var items = new List<FileSystemInfo>();

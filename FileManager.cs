@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Diagnostics;
 
 namespace BobManager
 {
@@ -21,6 +24,8 @@ namespace BobManager
 
         ActiveTable activeTable = ActiveTable.FirstTableActive;
 
+        Buffer buffer = new Buffer();
+
         public FileManager()
         {
             // Set directory
@@ -36,7 +41,10 @@ namespace BobManager
 
         private void HandleKeyboard()
         {
-            switch (Console.ReadKey().Key)
+            var cki = Console.ReadKey(true);
+            var items = tables[(int)activeTable].Dir.GetItems().ToList();
+
+            switch (cki.Key)
             {
                 case ConsoleKey.UpArrow:
                     tables[(int)activeTable].Index--;
@@ -77,21 +85,19 @@ namespace BobManager
                     }
                     break;
                 case ConsoleKey.Enter:
-                    var items = tables[(int)activeTable].Dir.GetItems().ToList();
-
                     if (items[tables[(int)activeTable].Index] is DirectoryInfo dir)
                     {
                         DirectoryInfo d = new DirectoryInfo(dir.FullName);
                         tables[(int)activeTable].Dir = d;
                         tables[(int)activeTable].Index = 0;
+
+                        Console.Clear();
+                        Show();
                     }
                     else if (items[tables[(int)activeTable].Index] is FileInfo file)
                     {
                         Process.Start(file.FullName);
                     }
-
-                    Console.Clear();
-                    Show();
                     break;
                 case ConsoleKey.Tab:
                     SwitchDriveWindow driveWindow = new SwitchDriveWindow()
@@ -114,8 +120,24 @@ namespace BobManager
                     Show();
                     break;
                 case ConsoleKey.F1:
-                    items = tables[(int)activeTable].Dir.GetItems().ToList();
                     InfoWindow.ShowInfo(items[tables[(int)activeTable].Index]);
+
+                    Console.Clear();
+                    Show();
+                    break;
+                case ConsoleKey.F6:
+                    buffer.Item = items[tables[(int)activeTable].Index];
+                    break;
+                case ConsoleKey.F7:
+                    if (buffer.Item is DirectoryInfo directory)
+                    {
+                        var parent = Directory.GetParent(items[tables[(int)activeTable].Index].FullName);
+                        directory.CopyTo($"{parent.FullName}\\{directory.Name}-copy");
+                    }
+                    else if (buffer.Item is FileInfo)
+                    {
+                        tables[(int)activeTable].CreateFile(buffer.Item.Name);
+                    }
 
                     Console.Clear();
                     Show();
