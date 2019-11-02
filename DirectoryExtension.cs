@@ -11,8 +11,17 @@ namespace BobManager
     {
         public static long GetSize(this DirectoryInfo dir)
         {
-            long sum = dir.GetFiles().Select(x => x.Length).Sum();
-
+            long sum = 0;
+            foreach(var file in dir.GetFiles())
+            {
+                try
+                {
+                    sum += file.Length;
+                }
+                catch (Exception)
+                {
+                }
+            }
             foreach (var directory in dir.GetDirectories())
             {
                 try

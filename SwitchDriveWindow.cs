@@ -19,7 +19,7 @@ namespace BobManager
 
             while (true)
             {
-                switch (Console.ReadKey().Key)
+                switch (Console.ReadKey(true).Key)
                 {
                     case ConsoleKey.Enter:
                         if (Directory.Exists(_drives[_index].Name))

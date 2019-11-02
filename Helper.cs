@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace BobManager
 {
@@ -29,6 +34,27 @@ namespace BobManager
             string right = new string(symbol, partSize);
 
             return left + str + right;
+        }
+        public static string GetItemInfo(FileSystemInfo item)
+        {
+            string info = string.Empty;
+
+            if (item is DirectoryInfo dir)
+            {
+                info = $"| {dir.Name.Shorten(22),-22} | " +
+                    $"<Directory> | " +
+                    $"{dir.CreationTime.ToShortDateString()} | " +
+                    $"{dir.CreationTime.ToShortTimeString(),-5} |";
+            }
+            else if (item is FileInfo file)
+            {
+                info = $"| {file.Name.Shorten(22),-22} | " +
+                    $"{Helper.FormatSize(file.Length),11} | " +
+                    $"{file.CreationTime.ToShortDateString()} | " +
+                    $"{file.CreationTime.ToShortTimeString(),-5} |";
+            }
+
+            return info;
         }
     }
 }

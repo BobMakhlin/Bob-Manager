@@ -12,18 +12,12 @@ namespace BobManager
     {
         FileTable[] tables = new FileTable[2]
             {
-                new FileTable(),
+                new FileTable()
+                {
+                    Active = true
+                },
                 new FileTable()
             };
-
-        enum ActiveTable
-        {
-            FirstTableActive,
-            SecondTableActive
-        }
-
-        ActiveTable activeTable = ActiveTable.FirstTableActive;
-
         Buffer buffer = new Buffer();
 
         public FileManager()
@@ -31,7 +25,6 @@ namespace BobManager
             // Set directory
             tables[0].Dir = new DirectoryInfo(@"C:\");
             tables[1].Dir = new DirectoryInfo(@"C:\");
-            tables[1].SelectedItemColor = ConsoleColor.DarkGreen;
 
             Console.WindowWidth = 126;
 
@@ -41,60 +34,66 @@ namespace BobManager
 
         private void HandleKeyboard()
         {
-            var cki = Console.ReadKey(true);
-            var items = tables[(int)activeTable].Dir.GetItems().ToList();
+            var activeTable = tables.ToList().Find(x => x.Active == true);
+            var items = activeTable.Dir.GetItems().ToList();
 
-            switch (cki.Key)
+            switch (Console.ReadKey(true).Key)
             {
                 case ConsoleKey.UpArrow:
-                    tables[(int)activeTable].Index--;
+                    activeTable.Index--;
 
-                    if ((tables[(int)activeTable].Index + 1) % Program.MaxItemsCount == 0)
+                    if ((activeTable.Index + 1) % Program.MaxItemsCount == 0)
                     {
                         Console.Clear();
                         Show();
                     }
                     else
                     {
-                        tables[(int)activeTable].RedrawUp();
+                        activeTable.RedrawUp();
                     }
                     break;
                 case ConsoleKey.DownArrow:
-                    tables[(int)activeTable].Index++;
+                    activeTable.Index++;
 
-                    if (tables[(int)activeTable].Index % Program.MaxItemsCount == 0)
+                    if (activeTable.Index % Program.MaxItemsCount == 0)
                     {
                         Console.Clear();
                         Show();
                     }
                     else
                     {
-                        tables[(int)activeTable].RedrawDown();
+                        activeTable.RedrawDown();
                     }
                     break;
                 case ConsoleKey.LeftArrow:
-                    if (activeTable != ActiveTable.FirstTableActive)
+                    if (!tables[0].Active)
                     {
-                        activeTable = ActiveTable.FirstTableActive;
+                        tables[0].Active = true;
+                        tables[1].Active = false;
+
+                        FileTable.RedrawLeft(tables[0], tables[1]);
                     }
                     break;
                 case ConsoleKey.RightArrow:
-                    if (activeTable != ActiveTable.SecondTableActive)
+                    if (!tables[1].Active)
                     {
-                        activeTable = ActiveTable.SecondTableActive;
+                        tables[1].Active = true;
+                        tables[0].Active = false;
+
+                        FileTable.RedrawRight(tables[0], tables[1]);
                     }
                     break;
                 case ConsoleKey.Enter:
-                    if (items[tables[(int)activeTable].Index] is DirectoryInfo dir)
+                    if (items[activeTable.Index] is DirectoryInfo dir)
                     {
                         DirectoryInfo d = new DirectoryInfo(dir.FullName);
-                        tables[(int)activeTable].Dir = d;
-                        tables[(int)activeTable].Index = 0;
+                        activeTable.Dir = d;
+                        activeTable.Index = 0;
 
                         Console.Clear();
                         Show();
                     }
-                    else if (items[tables[(int)activeTable].Index] is FileInfo file)
+                    else if (items[activeTable.Index] is FileInfo file)
                     {
                         Process.Start(file.FullName);
                     }
@@ -102,7 +101,7 @@ namespace BobManager
                 case ConsoleKey.Tab:
                     SwitchDriveWindow driveWindow = new SwitchDriveWindow()
                     {
-                        FileTable = tables[(int)activeTable]
+                        FileTable = activeTable
                     };
                     driveWindow.Start();
 
@@ -110,7 +109,7 @@ namespace BobManager
                     Show();
                     break;
                 case ConsoleKey.Delete:
-                    tables[(int)activeTable].DeleteSelectedItem();
+                    activeTable.DeleteSelectedItem();
 
                     Console.Clear();
                     Show();
@@ -120,23 +119,24 @@ namespace BobManager
                     Show();
                     break;
                 case ConsoleKey.F1:
-                    InfoWindow.ShowInfo(items[tables[(int)activeTable].Index]);
+                    InfoWindow.ShowInfo(items[activeTable.Index]);
 
                     Console.Clear();
                     Show();
                     break;
                 case ConsoleKey.F6:
-                    buffer.Item = items[tables[(int)activeTable].Index];
+                    buffer.Item = items[activeTable.Index];
                     break;
                 case ConsoleKey.F7:
                     if (buffer.Item is DirectoryInfo directory)
                     {
-                        var parent = Directory.GetParent(items[tables[(int)activeTable].Index].FullName);
-                        directory.CopyTo($"{parent.FullName}\\{directory.Name}-copy");
+                        var parent = Directory.GetParent(items[activeTable.Index].FullName);
+                        directory.CopyTo($"{parent.FullName}\\{directory.Name}");
                     }
-                    else if (buffer.Item is FileInfo)
+                    else if (buffer.Item is FileInfo file)
                     {
-                        tables[(int)activeTable].CreateFile(buffer.Item.Name);
+                        var parent = Directory.GetParent(items[activeTable.Index].FullName);
+                        file.CopyTo($"{parent.FullName}\\{file.Name}");
                     }
 
                     Console.Clear();

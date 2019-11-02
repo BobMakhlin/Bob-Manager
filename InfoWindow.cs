@@ -13,7 +13,11 @@ namespace BobManager
         {
             Draw(item);
 
-            while (Console.ReadKey().Key != ConsoleKey.Escape) ;
+            while (true)
+            {
+                if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                    return;
+            }
         }
         private static void Draw(FileSystemInfo item)
         {

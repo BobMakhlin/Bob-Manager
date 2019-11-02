@@ -12,30 +12,10 @@ namespace BobManager
         private int _index = 0;
 
         public DirectoryInfo Dir { get; set; }
-        public ConsoleColor SelectedItemColor { get; set; } = ConsoleColor.DarkRed;
         public (int X, int Y) Pos { get; set; }
-
-        private string GetInfo(FileSystemInfo item)
-        {
-            string info = string.Empty;
-
-            if (item is DirectoryInfo dir)
-            {
-                info = $"| {dir.Name.Shorten(22),-22} | " +
-                    $"<Directory> | " +
-                    $"{dir.CreationTime.ToShortDateString()} | " +
-                    $"{dir.CreationTime.ToShortTimeString(),-5} |";
-            }
-            else if (item is FileInfo file)
-            {
-                info = $"| {file.Name.Shorten(22),-22} | " +
-                    $"{Helper.FormatSize(file.Length),11} | " +
-                    $"{file.CreationTime.ToShortDateString()} | " +
-                    $"{file.CreationTime.ToShortTimeString(),-5} |";
-            }
-
-            return info;
-        }
+        public bool Active { get; set; } = false;
+        public ConsoleColor ActiveItemColor { get; set; } = ConsoleColor.DarkRed;
+        public ConsoleColor InactiveItemColor { get; set; } = ConsoleColor.DarkGreen;
 
         public int Index
         {
@@ -71,10 +51,10 @@ namespace BobManager
                     if (items[i] is DirectoryInfo dir)
                     {
                         if (i == Index)
-                            Console.BackgroundColor = SelectedItemColor;
+                            Console.BackgroundColor = Active ? ActiveItemColor : InactiveItemColor;
 
                         Console.SetCursorPosition(Pos.X, Pos.Y + (i - start + 2));
-                        Console.Write(GetInfo(dir));
+                        Console.Write(Helper.GetItemInfo(dir));
 
                         if (i == Index)
                             Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -82,10 +62,10 @@ namespace BobManager
                     else if (items[i] is FileInfo file)
                     {
                         if (i == Index)
-                            Console.BackgroundColor = SelectedItemColor;
+                            Console.BackgroundColor = Active ? ActiveItemColor : InactiveItemColor;
 
                         Console.SetCursorPosition(Pos.X, Pos.Y + (i - start + 2));
-                        Console.Write(GetInfo(file));
+                        Console.Write(Helper.GetItemInfo(file));
 
                         if (i == Index)
                             Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -96,12 +76,17 @@ namespace BobManager
                 }
             }
         }
-        private void DrawSelectedItem(List<FileSystemInfo> items)
+        private void DrawItem(List<FileSystemInfo> items, int index, ConsoleColor color = ConsoleColor.DarkBlue)
         {
-            Console.SetCursorPosition(Pos.X, Pos.Y + (Index % Program.MaxItemsCount) + 2);
-            Console.BackgroundColor = SelectedItemColor;
-            Console.Write(GetInfo(items[Index]));
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.SetCursorPosition(Pos.X, Pos.Y + (index % Program.MaxItemsCount) + 2);
+
+            if(color != ConsoleColor.DarkBlue)
+                Console.BackgroundColor = color;
+
+            Console.Write(Helper.GetItemInfo(items[index]));
+
+            if (color != ConsoleColor.DarkBlue)
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
         }
         public void RedrawUp()
         {
@@ -109,25 +94,39 @@ namespace BobManager
 
             var items = Dir.GetItems().ToList();
 
-            DrawSelectedItem(items);
+            DrawItem(items, Index, ActiveItemColor);
 
             if (Index + 1 < items.Count())
             {
-                Console.SetCursorPosition(Pos.X, Pos.Y + (Index % Program.MaxItemsCount) + 3);
-                Console.Write(GetInfo(items[Index + 1]));
+                DrawItem(items, Index + 1);
             }
         }
         public void RedrawDown()
         {
             var items = Dir.GetItems().ToList();
 
-            DrawSelectedItem(items);
+            DrawItem(items, Index, ActiveItemColor);
 
             if (Index - 1 >= 0)
             {
-                Console.SetCursorPosition(Pos.X, Pos.Y + (Index % Program.MaxItemsCount) + 1);
-                Console.Write(GetInfo(items[Index - 1]));
+                DrawItem(items, Index - 1);
             }
+        }
+        public static void RedrawLeft(FileTable left, FileTable right)
+        {
+            var leftItems = left.Dir.GetItems().ToList();
+            var rightItems = right.Dir.GetItems().ToList();
+
+            left.DrawItem(leftItems, left.Index, left.ActiveItemColor);
+            right.DrawItem(rightItems, right.Index, right.InactiveItemColor);
+        }
+        public static void RedrawRight(FileTable left, FileTable right)
+        {
+            var leftItems = left.Dir.GetItems().ToList();
+            var rightItems = right.Dir.GetItems().ToList();
+
+            right.DrawItem(rightItems, right.Index, right.ActiveItemColor);
+            left.DrawItem(leftItems, left.Index, left.InactiveItemColor);
         }
 
         // Working with directory.
@@ -143,14 +142,6 @@ namespace BobManager
             {
                 file.Delete();
             }
-        }
-        public void CreateDirectory(string name)
-        {
-            Directory.CreateDirectory($"{Dir.FullName}\\{name}");
-        }
-        public void CreateFile(string name)
-        {
-            File.Create($"{Dir.FullName}\\{name}");
         }
     }
 }
