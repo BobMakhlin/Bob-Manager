@@ -10,6 +10,7 @@ namespace BobManager
     class Program
     {
         public const int MaxItemsCount = 20;
+        public const ConsoleColor DefaultColor = ConsoleColor.DarkBlue;
         static void Main(string[] args)
         {
             FileManager fileManager = new FileManager();

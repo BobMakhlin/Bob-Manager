@@ -15,7 +15,8 @@ namespace BobManager
 
             while (true)
             {
-                if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                var key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.Escape || key == ConsoleKey.F1)
                     return;
             }
         }
@@ -52,7 +53,7 @@ namespace BobManager
                 Console.SetCursorPosition(pos.X, pos.Y + i);
                 Console.Write(info[i]);
             }
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.BackgroundColor = Program.DefaultColor;
         }
     }
 }

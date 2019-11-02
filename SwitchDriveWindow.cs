@@ -76,7 +76,7 @@ namespace BobManager
             Console.SetCursorPosition(pos.X, pos.Y + _drives.Count() + 2);
             Console.Write(title);
 
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.BackgroundColor = Program.DefaultColor;
         }
     }
 }

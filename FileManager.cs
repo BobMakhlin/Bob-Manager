@@ -28,7 +28,7 @@ namespace BobManager
 
             Console.WindowWidth = 126;
 
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.BackgroundColor = Program.DefaultColor;
             Console.Clear();
         }
 

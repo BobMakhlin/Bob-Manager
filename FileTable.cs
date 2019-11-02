@@ -57,7 +57,7 @@ namespace BobManager
                         Console.Write(Helper.GetItemInfo(dir));
 
                         if (i == Index)
-                            Console.BackgroundColor = ConsoleColor.DarkBlue;
+                            Console.BackgroundColor = Program.DefaultColor;
                     }
                     else if (items[i] is FileInfo file)
                     {
@@ -68,7 +68,7 @@ namespace BobManager
                         Console.Write(Helper.GetItemInfo(file));
 
                         if (i == Index)
-                            Console.BackgroundColor = ConsoleColor.DarkBlue;
+                            Console.BackgroundColor = Program.DefaultColor;
                     }
                 }
                 catch (Exception)
@@ -76,17 +76,17 @@ namespace BobManager
                 }
             }
         }
-        private void DrawItem(List<FileSystemInfo> items, int index, ConsoleColor color = ConsoleColor.DarkBlue)
+        private void DrawItem(List<FileSystemInfo> items, int index, ConsoleColor color = Program.DefaultColor)
         {
             Console.SetCursorPosition(Pos.X, Pos.Y + (index % Program.MaxItemsCount) + 2);
 
-            if(color != ConsoleColor.DarkBlue)
+            if(color != Program.DefaultColor)
                 Console.BackgroundColor = color;
 
             Console.Write(Helper.GetItemInfo(items[index]));
 
-            if (color != ConsoleColor.DarkBlue)
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
+            if (color != Program.DefaultColor)
+                Console.BackgroundColor = Program.DefaultColor;
         }
         public void RedrawUp()
         {
