@@ -165,6 +165,8 @@ namespace BobManager
 
             tables[1].Pos = (63, 0);
             tables[1].Draw();
+
+            FileTable.DrawFunctionsBar((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 2));
         }
     }
 }

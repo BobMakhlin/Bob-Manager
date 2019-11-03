@@ -76,6 +76,39 @@ namespace BobManager
                 }
             }
         }
+        public static void DrawFunctionsBar((int X, int Y) pos)
+        {
+            var functions = new Dictionary<string, string>();
+
+            functions.Add("Left Ar", "");
+            functions.Add("Rigth Ar", "");
+            functions.Add("Up Ar", "");
+            functions.Add("Down Ar", "");
+            functions.Add("Enter", "Open");
+            functions.Add("Tab", "Change drive");
+            functions.Add("Delete", "");
+            functions.Add("F1", "Info");
+            functions.Add("F5", "Update");
+            functions.Add("F6", "Copy");
+            functions.Add("F7", "Paste");
+
+            Console.SetCursorPosition(pos.X, pos.Y);
+
+            Console.Write("| ");
+            foreach (var function in functions)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write(function.Key);
+                Console.ForegroundColor = ConsoleColor.Gray;
+
+                if (function.Value != string.Empty)
+                {
+                    Console.Write($" {function.Value}");
+                }
+                Console.Write(" | ");
+            }
+        }
+
         private void DrawItem(List<FileSystemInfo> items, int index, ConsoleColor color = Program.DefaultColor)
         {
             Console.SetCursorPosition(Pos.X, Pos.Y + (index % Program.MaxItemsCount) + 2);
