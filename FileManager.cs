@@ -26,7 +26,8 @@ namespace BobManager
             tables[0].Dir = new DirectoryInfo(@"C:\");
             tables[1].Dir = new DirectoryInfo(@"C:\");
 
-            Console.WindowWidth = 126;
+            Console.WindowWidth = 124;
+            Console.WindowHeight = 31;
 
             Console.BackgroundColor = Program.DefaultColor;
             Console.Clear();
@@ -124,6 +125,42 @@ namespace BobManager
                     Console.Clear();
                     Show();
                     break;
+                case ConsoleKey.F2:
+                    InputWindow inputWindow = new InputWindow()
+                    {
+                        Text = "Directory name",
+                        Pos = ((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 6))
+                    };
+                    inputWindow.Draw();
+                    activeTable.CreateDirectory(inputWindow.GetString());
+
+                    Console.Clear();
+                    Show();
+                    break;
+                case ConsoleKey.F3:
+                    inputWindow = new InputWindow()
+                    {
+                        Text = "File name",
+                        Pos = ((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 6))
+                    };
+                    inputWindow.Draw();
+                    activeTable.CreateFile(inputWindow.GetString());
+
+                    Console.Clear();
+                    Show();
+                    break;
+                case ConsoleKey.F4:
+                    inputWindow = new InputWindow()
+                    {
+                        Text = "New name",
+                        Pos = ((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 6))
+                    };
+                    inputWindow.Draw();
+                    activeTable.Rename(inputWindow.GetString());
+
+                    Console.Clear();
+                    Show();
+                    break;
                 case ConsoleKey.F6:
                     buffer.Item = items[activeTable.Index];
                     break;
@@ -166,7 +203,7 @@ namespace BobManager
             tables[1].Pos = (63, 0);
             tables[1].Draw();
 
-            FileTable.DrawFunctionsBar((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 2));
+            FileTable.DrawFunctionsBar((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 3));
         }
     }
 }

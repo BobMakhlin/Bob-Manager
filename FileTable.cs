@@ -79,18 +79,17 @@ namespace BobManager
         public static void DrawFunctionsBar((int X, int Y) pos)
         {
             var functions = new Dictionary<string, string>();
-
-            functions.Add("Left Ar", "");
-            functions.Add("Rigth Ar", "");
-            functions.Add("Up Ar", "");
-            functions.Add("Down Ar", "");
-            functions.Add("Enter", "Open");
-            functions.Add("Tab", "Change drive");
-            functions.Add("Delete", "");
+            
             functions.Add("F1", "Info");
+            functions.Add("F2", "Mkdir");
+            functions.Add("F3", "Create file");
+            functions.Add("F4", "Rename");
             functions.Add("F5", "Update");
             functions.Add("F6", "Copy");
             functions.Add("F7", "Paste");
+            functions.Add("Tab", "Change disk");
+            functions.Add("Delete", "");
+            functions.Add("Enter", "Open");
 
             Console.SetCursorPosition(pos.X, pos.Y);
 
@@ -113,7 +112,7 @@ namespace BobManager
         {
             Console.SetCursorPosition(Pos.X, Pos.Y + (index % Program.MaxItemsCount) + 2);
 
-            if(color != Program.DefaultColor)
+            if (color != Program.DefaultColor)
                 Console.BackgroundColor = color;
 
             Console.Write(Helper.GetItemInfo(items[index]));
@@ -167,13 +166,55 @@ namespace BobManager
         {
             var items = Dir.GetItems().ToList();
 
-            if(items[Index] is DirectoryInfo dir)
+            if (items[Index] is DirectoryInfo dir)
             {
                 dir.Remove();
             }
-            else if(items[Index] is FileInfo file)
+            else if (items[Index] is FileInfo file)
             {
                 file.Delete();
+            }
+        }
+        public void CreateDirectory(string name)
+        {
+            try
+            {
+                var dir = Directory.CreateDirectory($"{Dir.FullName}\\{name}");
+                var items = Dir.GetItems().ToArray();
+                Index = Array.FindIndex(items, x => x.FullName == dir.FullName);
+            }
+            catch (Exception)
+            {
+            }
+        }
+        public void CreateFile(string name)
+        {
+            try
+            {
+                string path = $"{Dir.FullName}\\{name}";
+                File.Create(path);
+                var items = Dir.GetItems().ToArray();
+                Index = Array.FindIndex(items, x => x.FullName == path);
+            }
+            catch (Exception)
+            {
+            }
+        }
+        public void Rename(string name)
+        {
+            var items = Dir.GetItems().ToArray();
+
+            if (items[Index] is DirectoryInfo dir)
+            {
+                string path = $"{dir.Parent.FullName}\\{name}";
+                dir.MoveTo(path);
+                Index = Array.FindIndex(Dir.GetItems().ToArray(), x => x.FullName == path);
+            }
+            else if (items[Index] is FileInfo file)
+            {
+                string path = $"{file.Directory.FullName}\\{name}";
+                file.MoveTo(path);
+                Index = Array.FindIndex(Dir.GetItems().ToArray(), x => x.FullName == path);
             }
         }
     }
