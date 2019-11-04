@@ -10,7 +10,7 @@ namespace BobManager
     class SwitchDriveWindow
     {
         int _index = 0;
-        DriveInfo[] _drives = DriveInfo.GetDrives();
+        DriveInfo[] _drives = DriveInfo.GetDrives().Where(x => x.IsReady).ToArray();
 
         public FileTable FileTable { get; set; }
         public void Start()
@@ -24,18 +24,22 @@ namespace BobManager
                     case ConsoleKey.Enter:
                         if (Directory.Exists(_drives[_index].Name))
                         {
-                            FileTable.Dir = new DirectoryInfo(DriveInfo.GetDrives()[_index].Name);
+                            FileTable.Dir = new DirectoryInfo(_drives[_index].Name);
                             FileTable.Index = 0;
                         }
                         return;
                     case ConsoleKey.UpArrow:
                         if (_index > 0)
+                        {
                             _index--;
+                        }
                         Draw();
                         break;
                     case ConsoleKey.DownArrow:
-                        if (_index < DriveInfo.GetDrives().Count() - 1)
+                        if (_index < _drives.Length - 1)
+                        {
                             _index++;
+                        }
                         Draw();
                         break;
                     case ConsoleKey.Escape:
@@ -67,7 +71,14 @@ namespace BobManager
                 if (i == _index)
                     Console.BackgroundColor = ConsoleColor.DarkRed;
 
-                Console.Write($"| {_drives[i],-4} | {Helper.FormatSize(_drives[i].TotalSize),-10} |");
+                string driveSize;
+
+                if (_drives[i].IsReady)
+                    driveSize = $"{Helper.FormatSize(_drives[i].TotalSize), 10}";
+                else
+                    driveSize = $"{"Unknown",10}";
+
+                Console.Write($"| {_drives[i],-4} | {driveSize} |");
 
                 if (i == _index)
                     Console.BackgroundColor = ConsoleColor.DarkGray;
