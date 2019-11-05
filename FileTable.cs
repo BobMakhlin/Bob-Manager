@@ -192,9 +192,11 @@ namespace BobManager
             try
             {
                 string path = $"{Dir.FullName}\\{name}";
-                File.Create(path);
-                var items = Dir.GetItems().ToArray();
-                Index = Array.FindIndex(items, x => x.FullName == path);
+                using (FileStream fs = File.Create(path))
+                {
+                    var items = Dir.GetItems().ToArray();
+                    Index = Array.FindIndex(items, x => x.FullName == path);
+                }
             }
             catch (Exception)
             {
