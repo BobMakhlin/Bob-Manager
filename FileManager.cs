@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using System.Windows;
+using System.Threading;
 
 namespace BobManager
 {
@@ -18,7 +20,6 @@ namespace BobManager
                 },
                 new FileTable()
             };
-        Buffer buffer = new Buffer();
 
         public FileManager()
         {
@@ -111,6 +112,7 @@ namespace BobManager
                     break;
                 case ConsoleKey.Delete:
                     activeTable.DeleteSelectedItem();
+                    activeTable.Index = 0;
 
                     Console.Clear();
                     Show();
@@ -156,24 +158,35 @@ namespace BobManager
                         Pos = ((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 6))
                     };
                     inputWindow.Draw();
-                    activeTable.Rename(inputWindow.GetString());
+                    activeTable.RenameSelectedItem(inputWindow.GetString());
 
                     Console.Clear();
                     Show();
                     break;
                 case ConsoleKey.F6:
-                    buffer.Item = items[activeTable.Index];
+                    Clipboard.SetData(typeof(FileSystemInfo).FullName, items[activeTable.Index]);
                     break;
                 case ConsoleKey.F7:
-                    if (buffer.Item is DirectoryInfo directory)
+                    var obj = (FileSystemInfo)Clipboard.GetData(typeof(FileSystemInfo).FullName);
+
+                    if (obj is DirectoryInfo directory)
                     {
-                        var parent = Directory.GetParent(items[activeTable.Index].FullName);
-                        directory.CopyTo($"{parent.FullName}\\{directory.Name}");
+                        string path = $"{activeTable.Dir.FullName}\\{obj.Name}";
+                        directory.CopyTo(path);
+
+                        int index = activeTable.Dir.GetItems().ToList().FindIndex(x => x.FullName == path);
+                        if (index != -1)
+                            activeTable.Index = index;
                     }
-                    else if (buffer.Item is FileInfo file)
+                    else if (obj is FileInfo file)
                     {
-                        var parent = Directory.GetParent(items[activeTable.Index].FullName);
-                        file.CopyTo($"{parent.FullName}\\{file.Name}");
+                        string path = $"{activeTable.Dir.FullName}\\{obj.Name}";
+
+                        file.CopyTo(path);
+
+                        int index = activeTable.Dir.GetItems().ToList().FindIndex(x => x.FullName == path);
+                        if (index != -1)
+                            activeTable.Index = index;
                     }
 
                     Console.Clear();

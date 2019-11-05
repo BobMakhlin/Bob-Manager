@@ -202,7 +202,7 @@ namespace BobManager
             {
             }
         }
-        public void Rename(string name)
+        public void RenameSelectedItem(string name)
         {
             var items = Dir.GetItems().ToArray();
 

@@ -44,14 +44,14 @@ namespace BobManager
                 info = $"| {dir.Name.Shorten(22),-22} | " +
                     $"<Directory> | " +
                     $"{dir.CreationTime.ToShortDateString()} | " +
-                    $"{dir.CreationTime.ToShortTimeString(),-5} |";
+                    $"{dir.CreationTime.ToShortTimeString(),5} |";
             }
             else if (item is FileInfo file)
             {
                 info = $"| {file.Name.Shorten(22),-22} | " +
                     $"{Helper.FormatSize(file.Length),11} | " +
                     $"{file.CreationTime.ToShortDateString()} | " +
-                    $"{file.CreationTime.ToShortTimeString(),-5} |";
+                    $"{file.CreationTime.ToShortTimeString(),5} |";
             }
 
             return info;
