@@ -175,6 +175,18 @@ namespace BobManager
                     Console.Clear();
                     Show();
                     break;
+                case ConsoleKey.Escape:
+                    var parent = Directory.GetParent(activeTable.Dir.FullName);
+
+                    if(parent != null)
+                    {
+                        activeTable.Dir = parent;
+
+                        Console.Clear();
+                        Show();
+                    }
+                    
+                    break;
             }
         }
         public void Start()
