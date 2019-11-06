@@ -79,7 +79,7 @@ namespace BobManager
         public static void DrawFunctionsBar((int X, int Y) pos)
         {
             var functions = new Dictionary<string, string>();
-            
+
             functions.Add("F1", "Info");
             functions.Add("F2", "Mkdir");
             functions.Add("F3", "Create file");
@@ -217,6 +217,35 @@ namespace BobManager
                 string path = $"{file.Directory.FullName}\\{name}";
                 file.MoveTo(path);
                 Index = Array.FindIndex(Dir.GetItems().ToArray(), x => x.FullName == path);
+            }
+        }
+        public void PasteItem(FileSystemInfo obj)
+        {
+            if (obj is DirectoryInfo directory)
+            {
+                string path = $"{Dir.FullName}\\{obj.Name}";
+
+                while (Directory.Exists(path))
+                {
+                    path += "-copy";
+                }
+                directory.CopyTo(path);
+
+                int index = Dir.GetItems().ToList().FindIndex(x => x.FullName == path);
+                Index = index;
+            }
+            else if (obj is FileInfo file)
+            {
+                string path = $"{Dir.FullName}\\{obj.Name}";
+
+                while (File.Exists(path))
+                {
+                    path = $"{Dir.FullName}\\{Path.GetFileNameWithoutExtension(path)}-copy{obj.Extension}";
+                }
+                file.CopyTo(path);
+
+                int index = Dir.GetItems().ToList().FindIndex(x => x.FullName == path);
+                Index = index;
             }
         }
     }

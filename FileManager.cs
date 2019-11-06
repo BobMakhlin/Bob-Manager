@@ -112,7 +112,9 @@ namespace BobManager
                     break;
                 case ConsoleKey.Delete:
                     activeTable.DeleteSelectedItem();
-                    activeTable.Index = 0;
+
+                    if (activeTable.Index == items.Count() - 1)
+                        activeTable.Index--;
 
                     Console.Clear();
                     Show();
@@ -168,26 +170,7 @@ namespace BobManager
                     break;
                 case ConsoleKey.F7:
                     var obj = (FileSystemInfo)Clipboard.GetData(typeof(FileSystemInfo).FullName);
-
-                    if (obj is DirectoryInfo directory)
-                    {
-                        string path = $"{activeTable.Dir.FullName}\\{obj.Name}";
-                        directory.CopyTo(path);
-
-                        int index = activeTable.Dir.GetItems().ToList().FindIndex(x => x.FullName == path);
-                        if (index != -1)
-                            activeTable.Index = index;
-                    }
-                    else if (obj is FileInfo file)
-                    {
-                        string path = $"{activeTable.Dir.FullName}\\{obj.Name}";
-
-                        file.CopyTo(path);
-
-                        int index = activeTable.Dir.GetItems().ToList().FindIndex(x => x.FullName == path);
-                        if (index != -1)
-                            activeTable.Index = index;
-                    }
+                    activeTable.PasteItem(obj);
 
                     Console.Clear();
                     Show();
