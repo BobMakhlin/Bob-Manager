@@ -19,16 +19,49 @@ namespace BobManager
                     Active = true
                 },
                 new FileTable()
+                {
+                    Pos = (63, 0)
+                }
+            };
+        FunctionsBar[] bars = new FunctionsBar[2]
+            {
+                new FunctionsBar(),
+                new FunctionsBar()
             };
 
         public FileManager()
         {
-            // Set directory
-            tables[0].Dir = new DirectoryInfo(@"C:\");
-            tables[1].Dir = new DirectoryInfo(@"C:\");
+            // Set directories
+            for (int i = 0; i < tables.Length; i++)
+            {
+                tables[i].Dir = new DirectoryInfo(@"C:\");
+            }
+
+            for (int i = 0; i < bars.Length; i++)
+            {
+                bars[i].Pos = (tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 3 + i);
+            }
+
+            bars[0].AddFunction("F1", "Info");
+            bars[0].AddFunction("F2", "Mkdir");
+            bars[0].AddFunction("F3", "Create file");
+            bars[0].AddFunction("F4", "Rename");
+            bars[0].AddFunction("F5", "Update");
+            bars[0].AddFunction("F6", "Copy");
+            bars[0].AddFunction("F7", "Paste");
+            bars[0].AddFunction("Tab", "Change disk");
+            bars[0].AddFunction("Delete", "");
+            bars[0].AddFunction("Enter", "Open");
+
+            bars[1].AddFunction("Esc", "Parent");
+            bars[1].AddFunction("Left", "");
+            bars[1].AddFunction("Rigth", "");
+            bars[1].AddFunction("Up", "");
+            bars[1].AddFunction("Down", "");
+            bars[1].AddFunction(Helper.CenterText("<Coming soon!>", 80, '-'), "");
 
             Console.WindowWidth = 124;
-            Console.WindowHeight = 31;
+            Console.WindowHeight = 30 + bars.Count() - 1;
 
             Console.BackgroundColor = Program.DefaultColor;
             Console.Clear();
@@ -133,7 +166,7 @@ namespace BobManager
                     InputWindow inputWindow = new InputWindow()
                     {
                         Text = "Directory name",
-                        Pos = ((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 6))
+                        Pos = (bars[bars.Count()-1].Pos.X, bars[bars.Count() - 1].Pos.Y + 2)
                     };
                     inputWindow.Draw();
                     activeTable.CreateDirectory(inputWindow.GetString());
@@ -145,7 +178,7 @@ namespace BobManager
                     inputWindow = new InputWindow()
                     {
                         Text = "File name",
-                        Pos = ((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 6))
+                        Pos = (bars[bars.Count() - 1].Pos.X, bars[bars.Count() - 1].Pos.Y + 2)
                     };
                     inputWindow.Draw();
                     activeTable.CreateFile(inputWindow.GetString());
@@ -157,7 +190,7 @@ namespace BobManager
                     inputWindow = new InputWindow()
                     {
                         Text = "New name",
-                        Pos = ((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 6))
+                        Pos = (bars[bars.Count() - 1].Pos.X, bars[bars.Count() - 1].Pos.Y + 2)
                     };
                     inputWindow.Draw();
                     activeTable.RenameSelectedItem(inputWindow.GetString());
@@ -178,14 +211,14 @@ namespace BobManager
                 case ConsoleKey.Escape:
                     var parent = Directory.GetParent(activeTable.Dir.FullName);
 
-                    if(parent != null)
+                    if (parent != null)
                     {
                         activeTable.Dir = parent;
 
                         Console.Clear();
                         Show();
                     }
-                    
+
                     break;
             }
         }
@@ -206,12 +239,15 @@ namespace BobManager
         }
         private void Show()
         {
-            tables[0].Draw();
+            for (int i = 0; i < tables.Length; i++)
+            {
+                tables[i].Draw();
+            }
 
-            tables[1].Pos = (63, 0);
-            tables[1].Draw();
-
-            FileTable.DrawFunctionsBar((tables[0].Pos.X, tables[0].Pos.Y + Program.MaxItemsCount + 3));
+            for (int i = 0; i < bars.Length; i++)
+            {
+                bars[i].Draw();
+            }
         }
     }
 }

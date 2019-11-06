@@ -76,37 +76,37 @@ namespace BobManager
                 }
             }
         }
-        public static void DrawFunctionsBar((int X, int Y) pos)
-        {
-            var functions = new Dictionary<string, string>();
+        //public static void DrawFunctionsBar((int X, int Y) pos)
+        //{
+        //    var functions = new Dictionary<string, string>();
 
-            functions.Add("F1", "Info");
-            functions.Add("F2", "Mkdir");
-            functions.Add("F3", "Create file");
-            functions.Add("F4", "Rename");
-            functions.Add("F5", "Update");
-            functions.Add("F6", "Copy");
-            functions.Add("F7", "Paste");
-            functions.Add("Tab", "Change disk");
-            functions.Add("Delete", "");
-            functions.Add("Enter", "Open");
+        //    functions.Add("F1", "Info");
+        //    functions.Add("F2", "Mkdir");
+        //    functions.Add("F3", "Create file");
+        //    functions.Add("F4", "Rename");
+        //    functions.Add("F5", "Update");
+        //    functions.Add("F6", "Copy");
+        //    functions.Add("F7", "Paste");
+        //    functions.Add("Tab", "Change disk");
+        //    functions.Add("Delete", "");
+        //    functions.Add("Enter", "Open");
 
-            Console.SetCursorPosition(pos.X, pos.Y);
+        //    Console.SetCursorPosition(pos.X, pos.Y);
 
-            Console.Write("| ");
-            foreach (var function in functions)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write(function.Key);
-                Console.ForegroundColor = ConsoleColor.Gray;
+        //    Console.Write("| ");
+        //    foreach (var function in functions)
+        //    {
+        //        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        //        Console.Write(function.Key);
+        //        Console.ForegroundColor = ConsoleColor.Gray;
 
-                if (function.Value != string.Empty)
-                {
-                    Console.Write($" {function.Value}");
-                }
-                Console.Write(" | ");
-            }
-        }
+        //        if (function.Value != string.Empty)
+        //        {
+        //            Console.Write($" {function.Value}");
+        //        }
+        //        Console.Write(" | ");
+        //    }
+        //}
 
         private void DrawItem(List<FileSystemInfo> items, int index, ConsoleColor color = Program.DefaultColor)
         {
